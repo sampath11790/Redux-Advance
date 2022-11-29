@@ -10,11 +10,12 @@ const CartItem = (props) => {
   };
   const plusHandler = () => {
     Dispatch(
-      cartSliceAction.RemoveItem({
+      cartSliceAction.addItem({
         title,
         quantity,
         total,
         price,
+        id,
       })
     );
   };
