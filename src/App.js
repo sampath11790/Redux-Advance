@@ -4,7 +4,9 @@ import Products from "./components/Shop/Products";
 import { useSelector, useDispatch } from "react-redux";
 import React, { useEffect } from "react";
 import { uiAction } from "./store/ui-slice";
+import { sentCartdata } from "./store/Action-thunk";
 import Notification from "./components/UI/Notification";
+import { FetchData } from "./store/Action-thunk";
 let isinitialState = true;
 function App() {
   const Dispatch = useDispatch();
@@ -13,48 +15,14 @@ function App() {
   const notification = useSelector((state) => state.ui.notification);
 
   useEffect(() => {
-    const sendingData = async () => {
-      Dispatch(
-        uiAction.Addnotification({
-          status: "pending",
-          message: "sending cart data",
-          title: "loading",
-        })
-      );
-      try {
-        const response = await fetch(
-          "https://movies-671f6-default-rtdb.firebaseio.com/cart.json",
-          {
-            method: "PUT",
-            body: JSON.stringify(cart),
-          }
-        );
-        if (!response) {
-          throw new Error("sending faild");
-        } else {
-          Dispatch(
-            uiAction.Addnotification({
-              status: "compledted",
-              message: "data sending sucessfull",
-              title: "sucess",
-            })
-          );
-        }
-      } catch (error) {
-        Dispatch(
-          uiAction.Addnotification({
-            status: "failed",
-            message: "data sending faild",
-            title: "erroe",
-          })
-        );
-      }
-    };
+    Dispatch(FetchData());
+  }, []);
+  useEffect(() => {
     if (isinitialState) {
       isinitialState = false;
       return;
     }
-    sendingData();
+    Dispatch(sentCartdata(cart));
   }, [cart, Dispatch]);
   return (
     <React.Fragment>
